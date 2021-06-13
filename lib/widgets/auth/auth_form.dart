@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
+  final void Function(
+          String email, String username, String password, bool isLogin)
+      _submitAuthForm;
+  AuthForm(this._submitAuthForm);
   @override
   _AuthFormState createState() => _AuthFormState();
 }
@@ -16,9 +20,7 @@ class _AuthFormState extends State<AuthForm> {
     FocusScope.of(context).unfocus();
     if (isValid) {
       _formKey.currentState.save();
-      print(_userEmail);
-      print(_userName);
-      print(_userPassword);
+      widget._submitAuthForm(_userEmail, _userName, _userPassword, isLogin);
     }
   }
 
@@ -34,6 +36,7 @@ class _AuthFormState extends State<AuthForm> {
               key: _formKey,
               child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 TextFormField(
+                  key: ValueKey('email'),
                   validator: (value) {
                     if (value.isEmpty || (!value.contains('@'))) {
                       return 'Enter valid email';
@@ -47,6 +50,7 @@ class _AuthFormState extends State<AuthForm> {
                   },
                 ),
                 TextFormField(
+                  key: ValueKey('username'),
                   validator: (value) {
                     if (value.isEmpty || value.length < 4) {
                       return 'please enter atleast 4 characters';
@@ -60,6 +64,7 @@ class _AuthFormState extends State<AuthForm> {
                 ),
                 if (!isLogin)
                   TextFormField(
+                    key: ValueKey('passwor'),
                     validator: (value) {
                       if (value.isEmpty || value.length < 7) {
                         return 'passwords must be atleast 7 characters long';
