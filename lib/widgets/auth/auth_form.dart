@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class AuthForm extends StatefulWidget {
   final void Function(String email, String username, String password,
       bool isLogin, BuildContext ctx) _submitAuthForm;
-  AuthForm(this._submitAuthForm);
+  bool isLoading;
+  AuthForm(this._submitAuthForm, this.isLoading);
   @override
   _AuthFormState createState() => _AuthFormState();
 }
@@ -64,7 +65,7 @@ class _AuthFormState extends State<AuthForm> {
                 ),
                 if (!isLogin)
                   TextFormField(
-                    key: ValueKey('passwor'),
+                    key: ValueKey('password'),
                     validator: (value) {
                       if (value.isEmpty || value.length < 7) {
                         return 'passwords must be atleast 7 characters long';
@@ -80,19 +81,22 @@ class _AuthFormState extends State<AuthForm> {
                 SizedBox(
                   height: 13,
                 ),
-                RaisedButton(
-                  onPressed: _saveForm,
-                  child: Text('Submit'),
-                ),
-                FlatButton(
-                    onPressed: () {
-                      setState(() {
-                        isLogin = !isLogin;
-                      });
-                    },
-                    child: isLogin
-                        ? Text('create new account')
-                        : Text('I alredy have an account'))
+                if (widget.isLoading) CircularProgressIndicator(),
+                if (!widget.isLoading)
+                  RaisedButton(
+                    onPressed: _saveForm,
+                    child: Text('Submit'),
+                  ),
+                if (!widget.isLoading)
+                  FlatButton(
+                      onPressed: () {
+                        setState(() {
+                          isLogin = !isLogin;
+                        });
+                      },
+                      child: isLogin
+                          ? Text('create new account')
+                          : Text('I alredy have an account'))
               ]),
             ),
           ),
