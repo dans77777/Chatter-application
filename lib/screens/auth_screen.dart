@@ -2,6 +2,7 @@ import 'package:chatter/widgets/auth/auth_form.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthScreen extends StatefulWidget {
   @override
@@ -21,6 +22,10 @@ class _AuthScreenState extends State<AuthScreen> {
         _authResult = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
       }
+      Firestore.instance
+          .collection('users')
+          .document(_authResult.user.uid)
+          .setData({'email': email, 'username': username});
     } on PlatformException catch (err) {
       var msg = 'An error occured ! check credentials';
       if (err.message != null) {
